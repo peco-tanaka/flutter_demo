@@ -2,7 +2,7 @@ pre-commit:
   parallel: false
   commands:
     format:
-      run: flutter format .
+      run: dart format .
       glob: "lib/**/*.dart"
       stage_fixed: true
       fail_text: "Flutter format failed. Please check your Dart code syntax."
