@@ -18,7 +18,7 @@ jobs:
     steps:
       # リポジトリのコードをチェックアウト
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
 
       # fvmのバージョンを取得
       - name: "Read flutter version from fvm config"
@@ -43,10 +43,6 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # リモートリポジトリでGitHub Secretsから.envファイルを動的に作成
-      - name: Create .env
-        run: echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
-
       # フォーマットチェックを追加
       - name: Check code formatting
         run: dart format --set-exit-if-changed .
@@ -59,23 +55,14 @@ jobs:
       - name: Run tests
         run: flutter test
 
-      # Androidのkeystoreファイル（key.jks）をSecretsからデコードして配置
-      - name: Decode keystore
-        run: echo "${{ secrets.SIGNING_KEY }}" | base64 -d > android/app/key.jks
-
       # Androidのビルド（Secretsから署名情報を取得）
       - name: Build APK (Android)
-        run: flutter build apk --release
-        env:
-          KEY_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-          ALIAS: ${{ secrets.ALIAS }}
-          KEY_PATH: key.jks
+        run: flutter build apk --debug
 
       # ビルドしたapkをgithub Actionsアップロード
       - name: "Deploy apk 🚀"
         uses: actions/upload-artifact@v4
         with:
           name: release-apk  # アーティファクトの名前
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
           retention-days: 7 # 7日間保存
