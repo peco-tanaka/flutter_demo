@@ -1,0 +1,16 @@
+flavors:
+  dev:
+    app:
+      name: "flutter_demo Dev"
+    android:
+      applicationId: "com.example.flutter_demo.dev"
+    ios:
+      bundleId: "com.example.flutter_demo.dev"
+
+  prod:
+    app:
+      name: "flutter_demo"
+    android:
+      applicationId: "com.example.flutter_demo"
+    ios:
+      bundleId: "com.example.flutter_demo"
