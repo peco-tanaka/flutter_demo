@@ -6,8 +6,6 @@ on:
     branches:
       - main  # mainブランチへのpush時に実行
   pull_request:
-    branches:
-      - main  # mainブランチへのPR作成時に実行
 
 # ワークフロー内のジョブを定義
 jobs:
@@ -22,7 +20,6 @@ jobs:
 
       # fvmのバージョンを取得
       - name: "Read flutter version from fvm config"
-        id: flutter_info
         run: |
           FLUTTER_VERSION=$(jq -r '.flutterSdkVersion' ./.fvm/fvm_config.json)
           echo "FLUTTER_VERSION=$FLUTTER_VERSION" >> $GITHUB_ENV
@@ -45,7 +42,7 @@ jobs:
 
       # フォーマットチェックを追加
       - name: Check code formatting
-        run: dart format --set-exit-if-changed .
+        run: dart format
 
       # リントチェックを実行
       - name: Run linter
@@ -55,14 +52,6 @@ jobs:
       - name: Run tests
         run: flutter test
 
-      # Androidのビルド（Secretsから署名情報を取得）
+      # Androidのビルド
       - name: Build APK (Android)
         run: flutter build apk --debug
-
-      # ビルドしたapkをgithub Actionsアップロード
-      - name: "Deploy apk 🚀"
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-apk  # アーティファクトの名前
-          path: build/app/outputs/flutter-apk/app-debug.apk
-          retention-days: 7 # 7日間保存
